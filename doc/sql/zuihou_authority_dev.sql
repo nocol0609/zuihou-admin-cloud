@@ -11,7 +11,7 @@
  Target Server Version : 50722
  File Encoding         : 65001
 
- Date: 26/06/2019 14:36:17
+ Date: 29/06/2019 16:45:08
 */
 
 SET NAMES utf8mb4;
@@ -52,7 +52,7 @@ CREATE TABLE `c_auth_menu` (
   `name` varchar(20) DEFAULT '' COMMENT '资源名称',
   `describe_` varchar(200) DEFAULT '' COMMENT '功能描述',
   `code` varchar(255) DEFAULT '' COMMENT '资源编码',
-  `type` varchar(10) DEFAULT 'MENU' COMMENT '菜单类型 \r\n#MenuType{MENU:菜单;DIR:目录;}',
+  `menu_type` varchar(10) DEFAULT 'MENU' COMMENT '菜单类型 \r\n#MenuType{MENU:菜单;DIR:目录;}',
   `is_public` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否公开菜单\r\n就是无需分配就可以访问的。所有人可见',
   `href` varchar(255) DEFAULT '' COMMENT '资源路径',
   `target` varchar(9) DEFAULT 'SELF' COMMENT '打开方式\r\n#TargetType{SELF:_self,相同框架;TOP:_top,当前页;BLANK:_blank,新建窗口;PAREN:_parent,父窗口}',
@@ -93,7 +93,7 @@ DROP TABLE IF EXISTS `c_auth_resource`;
 CREATE TABLE `c_auth_resource` (
   `id` bigint(20) NOT NULL COMMENT 'ID',
   `code` varchar(255) DEFAULT NULL COMMENT '资源编码',
-  `type` varchar(10) DEFAULT NULL COMMENT '资源类型 \n#ResourceType{BUTTON:按钮;URI:链接;}',
+  `resource_type` varchar(10) DEFAULT NULL COMMENT '资源类型 \n#ResourceType{BUTTON:按钮;URI:链接;}',
   `name` varchar(255) DEFAULT '' COMMENT '接口名称',
   `menu_id` bigint(20) DEFAULT NULL COMMENT '菜单id\n#c_auth_menu',
   `base_path` varchar(100) DEFAULT '' COMMENT '基础路径',
@@ -143,6 +143,19 @@ CREATE TABLE `c_auth_role_authority` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色的资源';
 
 -- ----------------------------
+-- Table structure for c_auth_role_org
+-- ----------------------------
+DROP TABLE IF EXISTS `c_auth_role_org`;
+CREATE TABLE `c_auth_role_org` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `role_id` bigint(20) DEFAULT NULL COMMENT '角色ID\n#c_auth_role',
+  `org_id` bigint(20) DEFAULT NULL COMMENT '部门ID\n#c_core_org',
+  `create_time` datetime DEFAULT NULL,
+  `create_user` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色部门关系';
+
+-- ----------------------------
 -- Table structure for c_auth_user
 -- ----------------------------
 DROP TABLE IF EXISTS `c_auth_user`;
@@ -150,6 +163,8 @@ CREATE TABLE `c_auth_user` (
   `id` bigint(20) NOT NULL COMMENT 'ID',
   `account` varchar(30) NOT NULL COMMENT '账号',
   `name` varchar(20) NOT NULL COMMENT '姓名',
+  `org_id` bigint(20) DEFAULT NULL COMMENT '组织ID\n#c_core_org',
+  `station_id` bigint(20) DEFAULT NULL COMMENT '岗位ID\n#c_core_station',
   `account_type` varchar(20) DEFAULT 'CUSTOMER' COMMENT '账号类型  \n#AccountType{CUSTOMER:客户;BUILT_IN:内置}',
   `mobile` varchar(20) DEFAULT NULL COMMENT '手机',
   `sex` varchar(2) DEFAULT NULL COMMENT '性别\n#Sex{W:女;M:男}',
@@ -243,5 +258,42 @@ CREATE TABLE `c_common_dictionary_item` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `dict_code_item_code_uniq` (`dictionary_code`,`dictionary_item_code`) USING BTREE COMMENT '字典编码与字典项目编码联合唯一'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项';
+
+-- ----------------------------
+-- Table structure for c_core_org
+-- ----------------------------
+DROP TABLE IF EXISTS `c_core_org`;
+CREATE TABLE `c_core_org` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `name` varchar(255) DEFAULT '' COMMENT '名称',
+  `abbreviation` varchar(255) DEFAULT '' COMMENT '简称',
+  `parent_id` bigint(20) DEFAULT NULL COMMENT '父ID',
+  `sortvalue` int(11) DEFAULT '1' COMMENT '排序',
+  `status` bit(1) DEFAULT b'1' COMMENT '状态',
+  `describe_` varchar(255) DEFAULT '' COMMENT '描述',
+  `create_time` datetime DEFAULT NULL,
+  `create_user` bigint(20) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_user` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for c_core_station
+-- ----------------------------
+DROP TABLE IF EXISTS `c_core_station`;
+CREATE TABLE `c_core_station` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `name` varchar(255) DEFAULT '' COMMENT '名称',
+  `org_id` bigint(20) DEFAULT NULL COMMENT '组织ID\n#c_core_org',
+  `sortvalue` int(11) DEFAULT '1' COMMENT '排序',
+  `status` bit(1) DEFAULT b'1' COMMENT '状态',
+  `describe_` varchar(255) DEFAULT NULL COMMENT '描述',
+  `create_time` datetime DEFAULT NULL,
+  `create_user` bigint(20) DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_user` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 SET FOREIGN_KEY_CHECKS = 1;
