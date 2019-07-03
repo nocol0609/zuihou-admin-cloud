@@ -11,7 +11,7 @@
  Target Server Version : 50722
  File Encoding         : 65001
 
- Date: 29/06/2019 16:45:08
+ Date: 03/07/2019 11:02:05
 */
 
 SET NAMES utf8mb4;
@@ -162,7 +162,7 @@ DROP TABLE IF EXISTS `c_auth_user`;
 CREATE TABLE `c_auth_user` (
   `id` bigint(20) NOT NULL COMMENT 'ID',
   `account` varchar(30) NOT NULL COMMENT '账号',
-  `name` varchar(20) NOT NULL COMMENT '姓名',
+  `name` varchar(50) NOT NULL COMMENT '姓名',
   `org_id` bigint(20) DEFAULT NULL COMMENT '组织ID\n#c_core_org',
   `station_id` bigint(20) DEFAULT NULL COMMENT '岗位ID\n#c_core_station',
   `account_type` varchar(20) DEFAULT 'CUSTOMER' COMMENT '账号类型  \n#AccountType{CUSTOMER:客户;BUILT_IN:内置}',
@@ -258,6 +258,34 @@ CREATE TABLE `c_common_dictionary_item` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `dict_code_item_code_uniq` (`dictionary_code`,`dictionary_item_code`) USING BTREE COMMENT '字典编码与字典项目编码联合唯一'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='字典项';
+
+-- ----------------------------
+-- Table structure for c_common_opt_log
+-- ----------------------------
+DROP TABLE IF EXISTS `c_common_opt_log`;
+CREATE TABLE `c_common_opt_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `request_ip` varchar(50) DEFAULT NULL COMMENT '操作IP',
+  `type` varchar(5) DEFAULT NULL COMMENT '日志类型\n#LogType{OPT:操作类型;EX:异常类型}',
+  `user_name` varchar(50) DEFAULT NULL COMMENT '操作人',
+  `description` varchar(50) DEFAULT NULL COMMENT '操作描述',
+  `class_path` varchar(255) DEFAULT NULL COMMENT '类路径',
+  `action_method` varchar(50) DEFAULT NULL COMMENT '请求方法\n\n',
+  `request_uri` varchar(50) DEFAULT NULL COMMENT '请求uri',
+  `http_method` varchar(10) DEFAULT NULL COMMENT '请求方法\n#HttpMethod{GET:GET请求;POST:POST请求;PUT:PUT请求;DELETE:DELETE请求;PATCH:PATCH请求;TRACE:TRACE请求;HEAD:HEAD请求;OPTIONS:OPTIONS请求;}',
+  `params` text COMMENT '请求参数',
+  `result` text COMMENT '返回值',
+  `ex_desc` text COMMENT '异常详情信息',
+  `ex_detail` text COMMENT '异常描述',
+  `start_time` timestamp NULL DEFAULT NULL COMMENT '开始时间',
+  `finish_time` timestamp NULL DEFAULT NULL COMMENT '完成时间',
+  `consuming_time` bigint(20) DEFAULT NULL COMMENT '消耗时间',
+  `ua` varchar(500) DEFAULT NULL COMMENT '浏览器',
+  `create_time` datetime DEFAULT NULL,
+  `create_user` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_type` (`type`) USING BTREE COMMENT '日志类型'
+) ENGINE=InnoDB AUTO_INCREMENT=595931190599352354 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统日志';
 
 -- ----------------------------
 -- Table structure for c_core_org
