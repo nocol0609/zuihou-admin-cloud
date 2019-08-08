@@ -11,7 +11,7 @@
  Target Server Version : 50722
  File Encoding         : 65001
 
- Date: 02/08/2019 10:50:48
+ Date: 08/08/2019 17:54:54
 */
 
 SET NAMES utf8mb4;
@@ -169,20 +169,21 @@ CREATE TABLE `c_auth_user` (
   `station_id` bigint(20) DEFAULT NULL COMMENT '岗位ID\n#c_core_station',
   `mobile` varchar(20) DEFAULT '' COMMENT '手机',
   `sex` varchar(1) DEFAULT 'M' COMMENT '性别\n#Sex{W:女;M:男}',
-  `is_can_login` bit(1) NOT NULL DEFAULT b'1' COMMENT '是否可登陆',
+  `is_can_login` bit(1) DEFAULT b'1' COMMENT '是否可登陆',
   `is_delete` bit(1) DEFAULT b'0' COMMENT '删除标记',
   `photo` varchar(255) DEFAULT '' COMMENT '照片',
   `work_describe` varchar(255) DEFAULT '' COMMENT '工作描述\r\n比如：  市长、管理员、局长等等   用于登陆展示',
-  `login_count` int(11) NOT NULL DEFAULT '0' COMMENT '登录次数\n一直累计，记录了此账号总共登录次数',
+  `login_count` int(11) DEFAULT '0' COMMENT '登录次数\n一直累计，记录了此账号总共登录次数',
   `continuation_error_day` date DEFAULT NULL COMMENT '输入密码错误的日期\r\n比如20190102  与error_count合力实现一天输入密码错误次数限制',
-  `continuation_error_count` int(11) NOT NULL DEFAULT '0' COMMENT '一天连续输错密码次数',
+  `continuation_error_count` int(11) DEFAULT '0' COMMENT '一天连续输错密码次数',
   `password_expire_time` datetime DEFAULT NULL COMMENT '密码过期时间',
   `password` varchar(64) NOT NULL DEFAULT '' COMMENT '密码',
   `create_user` bigint(20) DEFAULT '0' COMMENT '创建人id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_user` bigint(20) DEFAULT '0' COMMENT '更新人id',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `UN_ACCOUNT` (`account`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户';
 
 -- ----------------------------
